@@ -9,4 +9,5 @@ interface FeedbackRepositoryInterface
 {
     public function index(): LengthAwarePaginator;
     public function create(array $data): Model;
+    public function vote(array $data): bool;
 }

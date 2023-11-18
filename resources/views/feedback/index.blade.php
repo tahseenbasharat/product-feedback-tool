@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('content')
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <div class="mt-4">
+            @include('layouts.partials.alerts')
+        </div>
         <div class="pt-3">
             <h1 class="h3 mb-3">Feedback Listing</h1>
             <div class="table-responsive">
@@ -23,13 +26,19 @@
                             <td>{{ $item->title }}</td>
                             <td>{{ $item->author->name }}</td>
                             <td>
-                                <button class="btn btn-vote mx-2">
-                                    <span class="icn fa-duotone fa-thumbs-up"></span>
-                                    <small class="v-count-number">{{ $item->up_votes_count }}</small>
+                                <button class="btn btn-vote mx-2" onclick="event.preventDefault();
+                                                     document.getElementById('voteValue').value = '{{ \App\Enums\VoteTypeEnum::UpVote->value }}';
+                                                     document.getElementById('feedbackId').value = '{{ $item->id }}';
+                                                     document.getElementById('voteForm').submit();">
+                                    <span class="icn fa-duotone fa-thumbs-up {{ $item->up_voted ? 'selected-icn' : '' }}"></span>
+                                    <small class="v-count-number  {{ $item->up_voted ? 'selected-icn' : '' }}">{{ $item->up_votes_count }}</small>
                                 </button>
-                                <button class="btn btn-vote mx-2">
-                                    <span class="icn icn-danger fa-duotone fa-thumbs-down"></span>
-                                    <small class="v-count-number">{{ $item->down_votes_count }}</small>
+                                <button class="btn btn-vote mx-2" onclick="event.preventDefault();
+                                                     document.getElementById('voteValue').value = '{{ \App\Enums\VoteTypeEnum::DownVote->value }}';
+                                                     document.getElementById('feedbackId').value = '{{ $item->id }}';
+                                                     document.getElementById('voteForm').submit();">
+                                    <span class="icn icn-danger fa-duotone fa-thumbs-down {{ $item->down_voted ? 'selected-icn-danger' : '' }}"></span>
+                                    <small class="v-count-number  {{ $item->down_voted ? 'selected-icn-danger' : '' }}">{{ $item->down_votes_count }}</small>
                                 </button>
                             </td>
                             <td class="text-center">
@@ -45,4 +54,10 @@
     <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
         {{ $data->links() }}
     </div>
+
+    <form id="voteForm" action="{{ route('feedback.vote') }}" method="POST" class="d-none">
+        @csrf
+        <input id="voteValue" type="hidden" name="type" />
+        <input id="feedbackId" type="hidden" name="feedback_id" />
+    </form>
 @endsection

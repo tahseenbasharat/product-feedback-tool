@@ -21,6 +21,8 @@ class Feedback extends Model
 
     protected $appends = [
         'category_class',
+        'down_voted',
+        'up_voted',
     ];
 
     protected $casts = [

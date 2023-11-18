@@ -19,7 +19,7 @@ trait FeedbackRelations
     }
 
     /**
-     *
+     * One feedback may have many votes
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -28,15 +28,25 @@ trait FeedbackRelations
         return $this->hasMany(Vote::class);
     }
 
+    /**
+     * One feedback may have many upvotes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function upVotes()
     {
         return $this->hasMany(Vote::class)
-            ->where('type', VoteTypeEnum::UpVote);
+            ->whereType( VoteTypeEnum::UpVote);
     }
 
+    /**
+     * One feedback may have many downvotes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function downVotes()
     {
         return $this->hasMany(Vote::class)
-            ->where('type', VoteTypeEnum::DownVote);
+            ->whereType(VoteTypeEnum::DownVote);
     }
 }

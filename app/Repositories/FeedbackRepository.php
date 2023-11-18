@@ -32,4 +32,41 @@ class FeedbackRepository implements FeedbackRepositoryInterface
     {
         return $this->feedback->create($data);
     }
+
+    public function find(int $id)
+    {
+        return $this->feedback->find($id);
+    }
+
+    public function vote(array $data): bool
+    {
+        $feedback = $this->feedback
+            ->with([
+                'votes' =>
+                    fn($q) => $q->whereUserId($data['user_id'])
+            ])
+            ->find($data['feedback_id']);
+
+        if ($feedback->votes->count()) {
+            $vote = $feedback
+                ->votes
+                ->where('feedback_id', $data['feedback_id'])
+                ->first();
+            if ($vote->type === $data['type']) {
+                // delete existing vote
+                $vote->delete();
+            } else {
+                // switch vote
+                $vote->update([
+                    'type' => $data['type']
+                ]);
+            }
+        } else {
+            // create new vote
+            $feedback->votes()
+                ->create($data);
+        }
+
+        return true;
+    }
 }

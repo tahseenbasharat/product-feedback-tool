@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\FeedbackCategoryEnum;
+use App\Http\Requests\Feedback\StoreFeedbackRequest;
+use App\Http\Requests\Feedback\SubmitVoteFeedbackRequest;
 use App\Interfaces\FeedbackRepositoryInterface;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\RedirectResponse;
 
 class FeedbackController extends Controller
 {
@@ -20,6 +20,8 @@ class FeedbackController extends Controller
     }
 
     /**
+     * Return listing page for feedback
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function index()
@@ -33,6 +35,8 @@ class FeedbackController extends Controller
     }
 
     /**
+     * Return form page to add new feedback
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function create()
@@ -40,23 +44,47 @@ class FeedbackController extends Controller
         return view('feedback.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Validate the form data,
+     * Store the form submitted data for new feedback,
+     * & Redirect to feedback listing page
+     *
+     * @param StoreFeedbackRequest $request
+     * @return RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(StoreFeedbackRequest $request)
     {
-        $this->validate($request, [
-            'category' => ['required', Rule::enum(FeedbackCategoryEnum::class)],
-            'title' => 'required',
-            'description' => 'required',
-        ]);
-
         $data = $request->only('category', 'title', 'description');
         $data['user_id'] = $request->user()->id;
 
         $this->feedbackRepository->create($data);
 
         return redirect()
-            ->route('authenticated.feedback.index')
+            ->route('feedback.index')
             ->with([
                 'success' => 'Feedback created successfully'
+            ]);
+    }
+
+    /**
+     *
+     *
+     * @param SubmitVoteFeedbackRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function vote(SubmitVoteFeedbackRequest $request): RedirectResponse
+    {
+        $data = $request->only('feedback_id', 'type');
+        $data['user_id'] = $request->user()->id;
+
+        $this->feedbackRepository->vote($data);
+
+        return redirect()
+            ->back()
+            ->with([
+                'success' => 'Vote successfully submitted'
             ]);
     }
 }

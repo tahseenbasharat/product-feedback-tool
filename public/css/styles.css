@@ -99,11 +99,19 @@
     color: #007bff;
 }
 
+.btn-vote .selected-icn {
+    color: #007bff;
+}
+
 .btn-vote .icn-danger {
     vertical-align: middle;
 }
 
 .btn-vote:hover .icn-danger {
+    color: #dc3545;
+}
+
+.btn-vote .selected-icn-danger {
     color: #dc3545;
 }
 

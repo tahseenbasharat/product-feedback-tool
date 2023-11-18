@@ -22,5 +22,6 @@ Route::group(['middleware' => ['auth']], fn() => [
     Route::group(['prefix' => 'feedback'], fn() => [
         Route::get('', [FeedbackController::class, 'create']),
         Route::post('', [FeedbackController::class, 'store'])->name('feedback.store'),
+        Route::post('vote', [FeedbackController::class, 'vote'])->name('feedback.vote'),
     ]),
 ]);
