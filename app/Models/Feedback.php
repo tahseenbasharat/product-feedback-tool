@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Feedback;
+namespace App\Models;
 
 use App\Enums\FeedbackCategoryEnum;
-use App\Models\Feedback\Traits\FeedbackAttributes;
-use App\Models\Feedback\Traits\FeedbackRelations;
+use App\Models\Traits\Feedback\Traits\FeedbackAttributes;
+use App\Models\Traits\Feedback\Traits\FeedbackRelations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

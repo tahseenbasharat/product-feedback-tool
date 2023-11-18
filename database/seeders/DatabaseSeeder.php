@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Feedback;
+use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +16,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        if ($this->command->confirm('Warning! This will truncate all records and generate new record')) {
+            // truncate all records
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Vote::truncate();
+            Feedback::truncate();
+            User::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+
+            $this->call(UserSeeder::class);
+            $this->call(FeedbackSeeder::class);
+        } else {
+            $this->command->comment('Aborted');
+        }
     }
 }

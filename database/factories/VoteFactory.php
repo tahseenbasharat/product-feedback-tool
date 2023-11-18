@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Enums\VoteTypeEnum;
+use App\Models\Feedback;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vote\Vote>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vote>
  */
 class VoteFactory extends Factory
 {
@@ -17,7 +20,9 @@ class VoteFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'feedback_id' => Feedback::factory(),
+            'user_id' => User::factory(),
+            'type' => fn () => fake()->randomElement(VoteTypeEnum::array()),
         ];
     }
 }

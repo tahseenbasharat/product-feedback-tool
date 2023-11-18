@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Feedback\Traits;
+namespace App\Models\Traits\Feedback\Traits;
 
 use App\Enums\FeedbackCategoryEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;

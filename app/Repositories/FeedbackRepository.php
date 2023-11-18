@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\FeedbackRepositoryInterface;
-use App\Models\Feedback\Feedback;
+use App\Models\Feedback;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -24,6 +24,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
                 'author' =>
                     fn($q) => $q->select('id', 'name')
             ])
+            ->withCount(['upVotes', 'downVotes'])
             ->paginate();
     }
 

@@ -3,11 +3,11 @@
 namespace Database\Factories;
 
 use App\Enums\FeedbackCategoryEnum;
-use App\Models\User\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Feedback\Feedback>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Feedback>
  */
 class FeedbackFactory extends Factory
 {
