@@ -19,7 +19,7 @@
                     @foreach($data->items() as $key => $item)
                         <tr>
                             <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->index + 1 }}</td>
-                            <td><span class="badge badge-info text-monospace">{{ $item->category }}</span></td>
+                            <td><span class="badge {{ $item->category_class }} text-monospace">{{ $item->category }}</span></td>
                             <td>{{ $item->title }}</td>
                             <td>{{ $item->author->name }}</td>
                             <td>
