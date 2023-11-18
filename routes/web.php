@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeedbackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn() => view('home'));
+Route::get('/', [FeedbackController::class, 'index']);
 
 require __DIR__.'/auth.php';
 
-Route::group(['middleware' => 'auth'], fn() => [
-   Route::get('feedback', fn() => view('home')),
+Route::group(['middleware' => ['auth']], fn() => [
+    Route::group(['prefix' => 'feedback'], fn() => [
+        Route::get('', [FeedbackController::class, 'create']),
+        Route::post('', [FeedbackController::class, 'store'])->name('feedback.store'),
+    ]),
 ]);
