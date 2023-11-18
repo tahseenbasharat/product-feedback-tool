@@ -25,11 +25,11 @@
                             <td>
                                 <button class="btn btn-vote mx-2">
                                     <span class="icn fa-duotone fa-thumbs-up"></span>
-                                    <small class="v-count-number">54</small>
+                                    <small class="v-count-number">{{ $item->up_votes_count }}</small>
                                 </button>
                                 <button class="btn btn-vote mx-2">
                                     <span class="icn icn-danger fa-duotone fa-thumbs-down"></span>
-                                    <small class="v-count-number">3</small>
+                                    <small class="v-count-number">{{ $item->down_votes_count }}</small>
                                 </button>
                             </td>
                             <td class="text-center">
