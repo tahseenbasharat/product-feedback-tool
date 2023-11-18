@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\FeedbackRepositoryInterface;
-use App\Models\Feedback;
+use App\Models\Feedback\Feedback;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
