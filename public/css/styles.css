@@ -1,0 +1,174 @@
+.navbar-brand {
+    font-size: 1rem;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.sidebar-sticky > .nav {
+    height: calc(100% - 39px);
+}
+
+.sidebar .nav-link,
+.sidebar .logout-btn {
+    font-weight: 500;
+    color: #333;
+    padding: .55rem 1rem;
+    transition: color .35s ease, background-color .35s ease;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover,
+.sidebar .logout-btn:hover {
+    color: #007bff;
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather,
+.logout-btn:hover .feather {
+    color: inherit;
+}
+
+.feather {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+}
+
+.sidebar .nav-link .feather,
+.logout-btn .feather {
+    margin-right: 4px;
+    color: #999;
+}
+
+.sidebar .logout-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+}
+
+[role="main"] {
+    padding-top: 133px;
+}
+
+.table-listing .action-btn {
+    padding: 0;
+    border: 0;
+    margin-left: 3px;
+    margin-right: 3px;
+    color: #212529;
+    background-color: transparent;
+    transition: color .35s ease;
+}
+
+.btn-vote{
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    outline: 0 !important;
+    box-shadow: none !important;
+    transition: all .35s ease;
+}
+
+.btn-vote .icn {
+    font-size: 20px;
+}
+
+.btn-vote:hover .icn {
+    color: #007bff;
+}
+
+.btn-vote .icn-danger {
+    vertical-align: middle;
+}
+
+.btn-vote:hover .icn-danger {
+    color: #dc3545;
+}
+
+.table-listing .action-btn:hover {
+    color: #007bff;
+}
+
+.table-listing .action-btn.btn-del:hover {
+    color: #dc3545;
+}
+
+.main-nav,
+.auth-dropdown > .btn,
+.auth-dropdown .dropdown-menu,
+.auth-user-name{
+    font-size: 14px;
+}
+
+.navbar-nav.main-nav .nav-link{
+    transition: color .35s ease;
+}
+
+.navbar-nav.main-nav .nav-link:hover{
+    color: #007bff;
+}
+
+.table-responsive{
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+table.table{
+    min-width: 750px;
+    width: 100%;
+    font-size: 14px;
+}
+
+h1, .h1{
+    font-size: 28px;
+}
+
+h3, .h3{
+    font-size: 22px;
+}
+
+@media (min-width: 768px){
+    h1, .h1{
+        font-size: 34px;
+    }
+
+    h3, .h3{
+        font-size: 28px;
+    }
+
+    [role="main"] {
+        padding-top: 54px;
+    }
+
+    table.table{
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 992px){
+    h1, .h1{
+        font-size: 40px;
+    }
+}
