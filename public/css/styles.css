@@ -260,3 +260,14 @@ h3, .h3{
         font-size: 40px;
     }
 }
+
+.ck-source-editing-area,
+.ck-editor__editable {
+    min-height: 400px;
+}
+
+.ck-editor__main {
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px solid #bbbbbb;
+}

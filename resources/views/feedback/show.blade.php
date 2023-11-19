@@ -37,7 +37,9 @@
                                     <textarea type="text" id="comment" class="form-control @error('content') is-invalid @enderror" placeholder="Enter your comment" rows="5" name="content">{{ old('content') }}</textarea>
                                 </div>
                                 <div class="text-right">
-                                    <span class="mr-1">Login to add comment</span>
+                                    @if (!Auth::check())
+                                        <span class="mr-1">Login to add comment</span>
+                                    @endif
                                     <button type="submit" class="btn btn-primary btn-submit" {{ Auth::check() ? '' : 'disabled' }}>Submit</button>
                                 </div>
                             </form>
@@ -57,7 +59,7 @@
                                             <time datetime="2008-02-14 20:00" class="time">{{ $comment->created_at->diffForHumans() }}</time>
                                         </div>
                                         <div class="comment-content">
-                                            <p>{{ $comment->content }}</p>
+                                            <p>{!! $comment->content !!}</p>
                                         </div>
                                     </li>
                                 @endforeach
@@ -81,11 +83,27 @@
         <input id="feedbackId" type="hidden" name="feedback_id" />
     </form>
 @endsection
-<script>
-    const submitVote = (event, feedbackId, voteType) => {
-        event.preventDefault()
-        document.getElementById('feedbackId').value = feedbackId
-        document.getElementById('voteValue').value = voteType
-        document.getElementById('voteForm').submit()
-    }
-</script>
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#comment'), {
+                shouldNotGroupWhenFull: true,
+                toolbar: ['bold', 'italic']
+            })
+            .then(editor => {
+                editor.ui.view.editable.style.height = '300px'
+            })
+            .catch(error => {
+                console.error(error)
+            });
+    </script>
+    <script>
+        const submitVote = (event, feedbackId, voteType) => {
+            event.preventDefault()
+            document.getElementById('feedbackId').value = feedbackId
+            document.getElementById('voteValue').value = voteType
+            document.getElementById('voteForm').submit()
+        }
+    </script>
+@endpush
