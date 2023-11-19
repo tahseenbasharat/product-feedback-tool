@@ -17,7 +17,7 @@ class FeedbackSeeder extends Seeder
     {
         $userIds = User::pluck('id')->toArray();
 
-        Feedback::factory(100)
+        Feedback::factory(1000)
             ->create()->each(
                 fn($feedback) => Vote::factory(rand(0, 100))
                     ->create([

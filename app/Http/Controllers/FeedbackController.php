@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Feedback\StoreFeedbackRequest;
 use App\Http\Requests\Feedback\SubmitVoteFeedbackRequest;
-use App\Interfaces\FeedbackRepositoryInterface;
+use App\Http\Requests\SubmitCommentRequest;
+use App\Interfaces\Repositories\FeedbackRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 class FeedbackController extends Controller
 {
@@ -20,13 +23,42 @@ class FeedbackController extends Controller
     }
 
     /**
+     * Add new comment on feedback
+     *
+     * @param SubmitCommentRequest $request
+     * @return RedirectResponse
+     */
+    public function comment(SubmitCommentRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+
+        $this->feedbackRepository->storeComment($data);
+
+        Session::flash('alert-success', 'Comment submitted successfully');
+
+        return redirect()
+            ->back();
+    }
+
+    /**
+     * Return form page to add new feedback
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function create(): View
+    {
+        return view('feedback.create');
+    }
+
+    /**
      * Return listing page for feedback
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
-        $data = $this->feedbackRepository->index();
+        $data = $this->feedbackRepository->paginatedList();
 
         return view('feedback.index')
             ->with([
@@ -35,13 +67,21 @@ class FeedbackController extends Controller
     }
 
     /**
-     * Return form page to add new feedback
+     * Return detail page for feedback
      *
+     * @param int $id
      * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function show(int $id): View
     {
-        return view('feedback.create');
+        $feedback = $this->feedbackRepository->find($id);
+        $comments = $this->feedbackRepository->paginatedCommentListByFeedbackId($id);
+
+        return view('feedback.show')
+            ->with([
+                'feedback' => $feedback,
+                'comments' => $comments,
+            ]);
     }
 
     /**
@@ -51,40 +91,36 @@ class FeedbackController extends Controller
      *
      * @param StoreFeedbackRequest $request
      * @return RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(StoreFeedbackRequest $request)
+    public function store(StoreFeedbackRequest $request): RedirectResponse
     {
-        $data = $request->only('category', 'title', 'description');
+        $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
-        $this->feedbackRepository->create($data);
+        $this->feedbackRepository->store($data);
+
+        Session::flash('alert-success', 'Feedback created successfully');
 
         return redirect()
-            ->route('feedback.index')
-            ->with([
-                'success' => 'Feedback created successfully'
-            ]);
+            ->route('feedback.index');
     }
 
     /**
-     *
+     * Submit feedback vote i.e. upvote / downvote
      *
      * @param SubmitVoteFeedbackRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function vote(SubmitVoteFeedbackRequest $request): RedirectResponse
     {
-        $data = $request->only('feedback_id', 'type');
+        $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
-        $this->feedbackRepository->vote($data);
+        $res = $this->feedbackRepository->storeVote($data);
+
+        Session::flash('alert-success', $res ? 'Vote submitted successfully' : 'Vote removed');
 
         return redirect()
-            ->back()
-            ->with([
-                'success' => 'Vote successfully submitted'
-            ]);
+            ->back();
     }
 }

@@ -14,14 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [FeedbackController::class, 'index']);
+Route::get('/', [FeedbackController::class, 'index'])->name('feedback.index');
+Route::get('/feedback/{id}', [FeedbackController::class, 'show'])->name('feedback.show');
 
 require __DIR__.'/auth.php';
 
 Route::group(['middleware' => ['auth']], fn() => [
     Route::group(['prefix' => 'feedback'], fn() => [
-        Route::get('', [FeedbackController::class, 'create']),
-        Route::post('', [FeedbackController::class, 'store'])->name('feedback.store'),
-        Route::post('vote', [FeedbackController::class, 'vote'])->name('feedback.vote'),
+        Route::get('', [FeedbackController::class, 'create'])->name('feedback.store'),
+        Route::post('', [FeedbackController::class, 'store']),
+        Route::post('vote', [FeedbackController::class, 'vote'])->name('feedback.storeVote'),
+        Route::post('comment', [FeedbackController::class, 'comment'])->name('feedback.storeComment'),
     ]),
 ]);

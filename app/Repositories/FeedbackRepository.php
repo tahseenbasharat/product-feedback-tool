@@ -2,7 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\FeedbackRepositoryInterface;
+use App\Interfaces\Repositories\FeedbackRepositoryInterface;
+use App\Models\Comment;
 use App\Models\Feedback;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,7 +17,46 @@ class FeedbackRepository implements FeedbackRepositoryInterface
         $this->feedback = Feedback::query();
     }
 
-    public function index(): LengthAwarePaginator
+    /**
+     * Find Feedback by id
+     *
+     * @param int $id
+     * @return Feedback|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
+     */
+    public function find(int $id): Feedback
+    {
+        return $this->feedback
+            ->with([
+                'author' =>
+                    fn($q) => $q->select('id', 'name'),
+            ])
+            ->withCount(['upVotes', 'downVotes'])
+            ->findOrFail($id);
+    }
+
+    /**
+     * return paginated <Comment> results for given feedback id
+     *
+     * @param int $feedbackId
+     * @return LengthAwarePaginator
+     */
+    public function paginatedCommentListByFeedbackId(int $feedbackId): LengthAwarePaginator
+    {
+        return Comment::select('id', 'user_id', 'content', 'created_at')
+            ->with([
+                'author' => fn($q) => $q->select('id', 'name'),
+            ])
+            ->whereFeedbackId($feedbackId)
+            ->orderBy('id', 'desc')
+            ->paginate();
+    }
+
+    /**
+     * return paginated <Feedback> results
+     *
+     * @return LengthAwarePaginator
+     */
+    public function paginatedList(): LengthAwarePaginator
     {
         return $this->feedback
             ->select('id', 'user_id', 'title', 'category', 'created_at')
@@ -25,20 +65,44 @@ class FeedbackRepository implements FeedbackRepositoryInterface
                     fn($q) => $q->select('id', 'name')
             ])
             ->withCount(['upVotes', 'downVotes'])
+            ->orderBy('id', 'desc')
             ->paginate();
     }
 
-    public function create(array $data): Model
+    /**
+     * Create new entry feedback entry into database records
+     *
+     * @param array $data
+     * @return Feedback|\Illuminate\Database\Eloquent\Builder|Model
+     */
+    public function store(array $data): Feedback
     {
         return $this->feedback->create($data);
     }
 
-    public function find(int $id)
+    /**
+     * create new comment entry into database records
+     * return true when comment created successfully
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function storeComment(array $data): bool
     {
-        return $this->feedback->find($id);
+        Comment::create($data);
+
+        return true;
     }
 
-    public function vote(array $data): bool
+    /**
+     * create new vote entry into database records
+     * return true when vote create / update
+     * return false when vote deleted / removed
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function storeVote(array $data): bool
     {
         $feedback = $this->feedback
             ->with([
@@ -55,6 +119,8 @@ class FeedbackRepository implements FeedbackRepositoryInterface
             if ($vote->type === $data['type']) {
                 // delete existing vote
                 $vote->delete();
+
+                return false;
             } else {
                 // switch vote
                 $vote->update([

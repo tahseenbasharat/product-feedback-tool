@@ -3,6 +3,7 @@
 namespace App\Models\Traits\Feedback\Traits;
 
 use App\Enums\VoteTypeEnum;
+use App\Models\Comment;
 use App\Models\User;
 use App\Models\Vote;
 
@@ -19,17 +20,28 @@ trait FeedbackRelations
     }
 
     /**
-     * One feedback may have many votes
+     * One feedback may have many comments
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function votes()
+    public function comments()
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Comment::class);
     }
 
     /**
-     * One feedback may have many upvotes
+     * One feedback may have many down_votes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function downVotes()
+    {
+        return $this->hasMany(Vote::class)
+            ->whereType(VoteTypeEnum::DownVote);
+    }
+
+    /**
+     * One feedback may have many up_votes
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -40,13 +52,12 @@ trait FeedbackRelations
     }
 
     /**
-     * One feedback may have many downvotes
+     * One feedback may have many votes
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function downVotes()
+    public function votes()
     {
-        return $this->hasMany(Vote::class)
-            ->whereType(VoteTypeEnum::DownVote);
+        return $this->hasMany(Vote::class);
     }
 }

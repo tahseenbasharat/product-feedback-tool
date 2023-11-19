@@ -1,5 +1,8 @@
 <nav class="navbar navbar-light fixed-top bg-light flex-md-nowrap p-0 shadow">
-    <a href="/" class="navbar-brand mr-0 px-3">Product Feedback App</a>
+    <div>
+        <span class="mobile-menu-btn ml-2 ml-sm-3"><i class="fa-solid fa-bars"></i></span>
+        <a href="/" class="navbar-brand mr-0 px-3">Product Feedback App</a>
+    </div>
     @guest()
         <ul class="navbar-nav main-nav px-3">
             <li class="nav-item">
@@ -24,5 +27,5 @@
                 </form>
             </div>
         </div>
-    @endif
+    @endguest
 </nav>

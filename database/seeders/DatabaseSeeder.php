@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Comment;
 use App\Models\Feedback;
 use App\Models\User;
 use App\Models\Vote;
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
         if ($this->command->confirm('Warning! This will truncate all records and generate new record')) {
             // truncate all records
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Comment::truncate();
             Vote::truncate();
             Feedback::truncate();
             User::truncate();

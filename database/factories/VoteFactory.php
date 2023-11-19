@@ -3,8 +3,10 @@
 namespace Database\Factories;
 
 use App\Enums\VoteTypeEnum;
+use App\Models\Comment;
 use App\Models\Feedback;
 use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,5 +26,16 @@ class VoteFactory extends Factory
             'user_id' => User::factory(),
             'type' => fn () => fake()->randomElement(VoteTypeEnum::array()),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(
+            fn(Vote $vote) => Comment::factory()
+                ->create([
+                    'user_id' => $vote->user_id,
+                    'feedback_id' => $vote->feedback_id,
+                ])
+        );
     }
 }

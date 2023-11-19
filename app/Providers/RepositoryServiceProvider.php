@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Interfaces\FeedbackRepositoryInterface;
+use App\Interfaces\Repositories\FeedbackRepositoryInterface;
 use App\Repositories\FeedbackRepository;
 use Illuminate\Support\ServiceProvider;
 
