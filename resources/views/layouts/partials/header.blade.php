@@ -1,6 +1,8 @@
 <nav class="navbar navbar-light fixed-top bg-light flex-md-nowrap p-0 shadow">
     <div>
-        <span class="mobile-menu-btn ml-2 ml-sm-3"><i class="fa-solid fa-bars"></i></span>
+        @if(Auth::check())
+            <span class="mobile-menu-btn ml-2 ml-sm-3"><i class="fa-solid fa-bars"></i></span>
+        @endif
         <a href="/" class="navbar-brand mr-0 px-3">Product Feedback App</a>
     </div>
     @guest()

@@ -12,6 +12,15 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create admin account
+        User::factory()
+            ->create([
+                'name' => 'Admin',
+                'username' => 'admin',
+                'password' => 'admin',
+                'is_admin' => true
+            ]);
+
         // Creating personal account
         User::factory()
             ->create([
