@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('/css/styles.css') }}">
+    @stack('styles')
     <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
@@ -23,9 +24,10 @@
 <script>
     $(document).ready(function() {
         $('.mobile-menu-btn').click(function() {
-            $('body').toggleClass('menu-open');
+            $('body').toggleClass('menu-open')
         });
-    });
+    })
 </script>
+@stack('scripts')
 </body>
 </html>

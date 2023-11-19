@@ -5,16 +5,31 @@ namespace App\Repositories;
 use App\Interfaces\Repositories\FeedbackRepositoryInterface;
 use App\Models\Comment;
 use App\Models\Feedback;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FeedbackRepository implements FeedbackRepositoryInterface
 {
-    protected $feedback;
+    protected Builder $feedbackModel;
 
+    /**
+     * Injecting Builder instance
+     */
     public function __construct()
     {
-        $this->feedback = Feedback::query();
+        $this->feedbackModel = Feedback::query();
+    }
+
+    /**
+     * Delete feedback record from database
+     *
+     * @param Model $model
+     * @return bool
+     */
+    public function destroy(Model $model): bool
+    {
+        return $model->delete() ?: FALSE;
     }
 
     /**
@@ -25,7 +40,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      */
     public function find(int $id): Feedback
     {
-        return $this->feedback
+        return $this->feedbackModel
             ->with([
                 'author' =>
                     fn($q) => $q->select('id', 'name'),
@@ -58,8 +73,8 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      */
     public function paginatedList(): LengthAwarePaginator
     {
-        return $this->feedback
-            ->select('id', 'user_id', 'title', 'category', 'created_at')
+        return $this->feedbackModel
+            ->select('id', 'user_id', 'title', 'category', 'is_comment_enabled', 'created_at')
             ->with([
                 'author' =>
                     fn($q) => $q->select('id', 'name')
@@ -77,7 +92,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      */
     public function store(array $data): Feedback
     {
-        return $this->feedback->create($data);
+        return $this->feedbackModel->create($data);
     }
 
     /**
@@ -104,7 +119,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      */
     public function storeVote(array $data): bool
     {
-        $feedback = $this->feedback
+        $feedback = $this->feedbackModel
             ->with([
                 'votes' =>
                     fn($q) => $q->whereUserId($data['user_id'])
@@ -134,5 +149,18 @@ class FeedbackRepository implements FeedbackRepositoryInterface
         }
 
         return true;
+    }
+
+    /**
+     * Update is_comment_enable state in database
+     *
+     * @param Feedback $feedback
+     * @return bool
+     */
+    public function toggleComments(Feedback $feedback): bool
+    {
+        return $feedback->update([
+            'is_comment_enabled' => !$feedback->is_comment_enabled
+        ]);
     }
 }

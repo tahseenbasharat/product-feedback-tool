@@ -2,12 +2,14 @@
 
 namespace App\Interfaces\Repositories;
 
+use App\Interfaces\Repositories\Base\DestroyInterface;
 use App\Interfaces\Repositories\Base\FindInterface;
 use App\Interfaces\Repositories\Base\PaginateInterface;
 use App\Interfaces\Repositories\Base\StoreInterface;
+use App\Models\Feedback;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface FeedbackRepositoryInterface extends FindInterface, PaginateInterface, StoreInterface
+interface FeedbackRepositoryInterface extends DestroyInterface, FindInterface, PaginateInterface, StoreInterface
 {
     /**
      * return LengthAwarePaginator<Comment> results for given feedback id
@@ -35,4 +37,6 @@ interface FeedbackRepositoryInterface extends FindInterface, PaginateInterface, 
      * @return bool
      */
     public function storeComment(array $data): bool;
+
+    public function toggleComments(Feedback $feedback): bool;
 }

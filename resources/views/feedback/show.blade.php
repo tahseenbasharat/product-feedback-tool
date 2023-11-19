@@ -12,17 +12,11 @@
                         <span class="badge badge-info text-monospace">{{ $feedback->category }}</span>
                     </div>
                     <div class="tp-i-right">
-                        <button class="btn btn-vote mx-1" onclick="event.preventDefault();
-                                                     document.getElementById('voteValue').value = '{{ \App\Enums\VoteTypeEnum::UpVote->value }}';
-                                                     document.getElementById('feedbackId').value = '{{ $feedback->id }}';
-                                                     document.getElementById('voteForm').submit();">
+                        <button class="btn btn-vote mx-1" onclick="submitVote(event, '{{ $feedback->id }}', '{{ \App\Enums\VoteTypeEnum::UpVote->value }}')">
                             <span class="icn fa-duotone fa-thumbs-up {{ $feedback->up_voted ? 'selected-icn' : '' }}"></span>
                             <small class="v-count-number">{{ $feedback->up_votes_count }}</small>
                         </button>
-                        <button class="btn btn-vote mx-1" onclick="event.preventDefault();
-                                                     document.getElementById('voteValue').value = '{{ \App\Enums\VoteTypeEnum::DownVote->value }}';
-                                                     document.getElementById('feedbackId').value = '{{ $feedback->id }}';
-                                                     document.getElementById('voteForm').submit();">
+                        <button class="btn btn-vote mx-1" onclick="submitVote(event, '{{ $feedback->id }}', '{{ \App\Enums\VoteTypeEnum::DownVote->value }}')">
                             <span class="icn icn-danger fa-duotone fa-thumbs-down {{ $feedback->down_voted ? 'selected-icn-danger' : '' }}"></span>
                             <small class="v-count-number">{{ $feedback->down_votes_count }}</small>
                         </button>
@@ -43,7 +37,8 @@
                                     <textarea type="text" id="comment" class="form-control @error('content') is-invalid @enderror" placeholder="Enter your comment" rows="5" name="content">{{ old('content') }}</textarea>
                                 </div>
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary btn-submit">Submit</button>
+                                    <span class="mr-1">Login to add comment</span>
+                                    <button type="submit" class="btn btn-primary btn-submit" {{ Auth::check() ? '' : 'disabled' }}>Submit</button>
                                 </div>
                             </form>
                             <h2>Feedback Discussion</h2>
@@ -86,3 +81,11 @@
         <input id="feedbackId" type="hidden" name="feedback_id" />
     </form>
 @endsection
+<script>
+    const submitVote = (event, feedbackId, voteType) => {
+        event.preventDefault()
+        document.getElementById('feedbackId').value = feedbackId
+        document.getElementById('voteValue').value = voteType
+        document.getElementById('voteForm').submit()
+    }
+</script>

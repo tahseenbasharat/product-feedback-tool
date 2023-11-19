@@ -26,7 +26,8 @@ class Feedback extends Model
     ];
 
     protected $casts = [
-        'category' => FeedbackCategoryEnum::class
+        'category' => FeedbackCategoryEnum::class,
+        'is_comment_enabled' => 'boolean'
     ];
 
     /**
@@ -38,6 +39,7 @@ class Feedback extends Model
         'title',
         'category',
         'description',
+        'is_comment_enabled',
         'user_id',
     ];
 }

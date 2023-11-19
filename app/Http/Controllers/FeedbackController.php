@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Feedback\StoreFeedbackRequest;
+use App\Http\Requests\Feedback\SubmitCommentRequest;
 use App\Http\Requests\Feedback\SubmitVoteFeedbackRequest;
-use App\Http\Requests\SubmitCommentRequest;
 use App\Interfaces\Repositories\FeedbackRepositoryInterface;
+use App\Models\Feedback;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -15,6 +16,8 @@ class FeedbackController extends Controller
     private FeedbackRepositoryInterface $feedbackRepository;
 
     /**
+     * Injecting FeedbackRepositoryInterface
+     *
      * @param FeedbackRepositoryInterface $feedbackRepository
      */
     public function __construct(FeedbackRepositoryInterface $feedbackRepository)
@@ -49,6 +52,33 @@ class FeedbackController extends Controller
     public function create(): View
     {
         return view('feedback.create');
+    }
+
+    /**
+     * Delete feedback record from database
+     *
+     * @param Feedback $feedback
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Feedback $feedback): RedirectResponse
+    {
+        $deleted = $this->feedbackRepository->destroy($feedback);
+
+        $r = match ($deleted) {
+            TRUE => [
+                'alertType' => 'alert-success',
+                'message' => 'Record deleted successfully',
+            ],
+            FALSE => [
+                'alertType' => 'alert-danger',
+                'message' => 'Something went wrong deleting the record'
+            ]
+        };
+
+        Session::flash($r['alertType'], $r['message']);
+
+        return redirect()
+            ->back();
     }
 
     /**
@@ -119,6 +149,34 @@ class FeedbackController extends Controller
         $res = $this->feedbackRepository->storeVote($data);
 
         Session::flash('alert-success', $res ? 'Vote submitted successfully' : 'Vote removed');
+
+        return redirect()
+            ->back();
+    }
+
+    /**
+     * Enable / disable comments on feedback
+     *
+     * @param Feedback $feedback
+     * @return RedirectResponse
+     */
+    public function toggleComment(Feedback $feedback): RedirectResponse
+    {
+        $updated = $this->feedbackRepository->toggleComments($feedback);
+
+        $r = match ($updated) {
+            TRUE => [
+                'alertType' => 'alert-success',
+                'message' => $feedback->is_comment_enabled ?
+                    "Comments disabled for $feedback->id" : "Comments enabled for $feedback->id",
+            ],
+            FALSE => [
+                'alertType' => 'alert-danger',
+                'message' => 'Something went wrong deleting the record'
+            ]
+        };
+
+        Session::flash($r['alertType'], $r['message']);
 
         return redirect()
             ->back();
